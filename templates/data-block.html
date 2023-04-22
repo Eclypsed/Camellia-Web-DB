@@ -1,0 +1,160 @@
+{% macro data_block(name, url, altNames, artists, songType, touhouOrigin, originalSong, duration, albums, gameAppearances, links, imgs, description) %}
+    <div class="datapoint">
+        <div>NAME:</div>
+        <div id="{{url}}-name" class="datapoint-name" style="color: gray;">{{ name }}</div>
+    </div>
+    <div class="datapoint">
+        <div>URL:</div>
+        <div id="{{url}}-url" class="datapoint-url" style="color: gray;">{{ url }}</div>
+    </div>
+    <div class="datapoint">
+        <div>ALTERNATE NAMES:</div>
+        <div id="{{url}}-altNames" contenteditable="true">{{ altNames|join(', ') if altNames else altNames }}</div>
+    </div>
+    <div class="datapoint">
+        <div>ARTISTS:</div>
+        <div id="{{url}}-artists" contenteditable="true">{{ artists|join(', ') if artists else artists }}</div>
+    </div>
+    <div class="datapoint">
+        <div>Song Type:</div>
+        <div id="{{url}}-songType" contenteditable="true">{{ songType }}</div>
+    </div>
+    <div class="datapoint">
+        <div>TOUHOU ORIGIN:</div>
+        <div id="{{url}}-touhouOrigin" class="data-rows">
+            <div class="data-header" style="grid-template-columns: repeat(2, 1fr) 30px;">
+                <div>Touhou Song</div>
+                <div>Touhou Game</div>
+                <button type="button" class="add-row" onclick="addrow(this, ['div', 'div'], 'repeat(2, 1fr) 30px;')">+</button>
+            </div>
+            {% if touhouOrigin %}
+                {% for touhouSong in touhouOrigin %}
+                    <div class="data-row" style="grid-template-columns: repeat(2, 1fr) 30px;">
+                        <div contenteditable="true" class="touhouSong">{{ touhouSong['touhouSong'] }}</div>
+                        <div contenteditable="true" class="touhouGame">{{ touhouSong['touhouGame'] }}</div>
+                        <button type="button" class="delete-row">-</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    <div class="datapoint">
+        <div>ORIGINAL SONG:</div>
+        <div id="{{url}}-originalSong" class="data-rows">
+            <div class="data-header" style="grid-template-columns: repeat(3, 1fr);">
+                <div>Original Song Name</div>
+                <div>Original Song Artists</div>
+                <div>Original Song Link</div>
+            </div>
+            <div class="data-row" style="grid-template-columns: repeat(3, 1fr);">
+                <div contenteditable="true">{{ originalSong['originalSongName'] }}</div>
+                <div contenteditable="true">{{ originalSong['originalSongArtists']|join(', ') }}</div>
+                <div contenteditable="true">{{ originalSong['originalSongLink'] }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="datapoint">
+        <div>Duration:</div>
+        <div id="{{url}}-duration" contenteditable="true">{{ duration }}</div>
+    </div>
+    <div class="datapoint">
+        <div>ALBUMS:</div>
+        <div id="{{url}}-albums" class="data-rows">
+            <div class="data-header" style="grid-template-columns: repeat(5, 1fr) 30px;">
+                <div>Album Name</div>
+                <div>Label/Publisher/Circle</div>
+                <div>Release Date</div>
+                <div>Release Event</div>
+                <div>Album Type (C, A, OST, etc...)</div>
+                <button type="button" class="add-row" onclick="addrow(this, ['div', 'div', 'div', 'div', 'div'], 'repeat(5, 1fr) 30px;')">+</button>
+            </div>
+            {% if albums %}
+                {% for album in albums %}
+                    <div class="data-row" style="grid-template-columns: repeat(5, 1fr) 30px;">
+                        <div contenteditable="true">{{ album['albumName'] }}</div>
+                        <div contenteditable="true">{{ album['albumPublisher'] }}</div>
+                        <div contenteditable="true">{{ album['albumReleaseDate'] }}</div>
+                        <div contenteditable="true">{{ album['albumReleaseEvent'] }}</div>
+                        <div contenteditable="true">{{ album['albumType'] }}</div>
+                        <button type="button" class="delete-row">-</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    <div class="datapoint">
+        <div>GAME APPEARANCES:</div>
+        <div id="{{url}}-gameAppearances" class="data-rows">
+            <div class="data-header" style="grid-template-columns: repeat(3, 1fr) 30px;">
+                <div>Game Name</div>
+                <div>Developer/Publisher</div>
+                <div>Release/Addition Date</div>
+                <button type="button" class="add-row" onclick="addrow(this, ['div', 'div', 'div'], 'repeat(3, 1fr) 30px;')">+</button>
+            </div>
+            {% if gameAppearances %}
+                {% for game in gameAppearances %}
+                    <div class="data-row" style="grid-template-columns: repeat(3, 1fr) 30px;">
+                        <div contenteditable="true">{{ game['gameName'] }}</div>
+                        <div contenteditable="true">{{ game['gamePublisher'] }}</div>
+                        <div contenteditable="true">{{ game['gameReleaseDate'] }}</div>
+                        <button type="button" class="delete-row">-</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    <div class="datapoint">
+        <div>LINKS:</div>
+        <div id="{{url}}-links" class="data-rows">
+            <div class="data-header" style="grid-template-columns: repeat(3, 1fr) 30px 30px;">
+                <div>Link Source</div>
+                <div>Display Name</div>
+                <div>Link</div>
+                <div>Unof?</div>
+                <button type="button" class="add-row" onclick="addrow(this, ['div', 'div', 'div', 'checkbox'], 'repeat(3, 1fr) 30px 30px;')">+</button>
+            </div>
+            {% if links %}
+                {% for link in links %}
+                    <div class="data-row" style="grid-template-columns: repeat(3, 1fr) 30px 30px;">
+                        <div contenteditable="true">{{ link['linkSource'] }}</div>
+                        <div contenteditable="true">{{ link['displayName'] }}</div>
+                        <div contenteditable="true">{{ link['link'] }}</div>
+                        {% if link['unofficial'] %}
+                            <input type="checkbox" class="unofficial-checkbox" checked>
+                        {% else %}
+                            <input type="checkbox" class="unofficial-checkbox">
+                        {% endif %}
+                        <button type="button" class="delete-row">-</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    <div class="datapoint">
+        <div>IMAGES:</div>
+        <div id="{{url}}-imgs" class="data-rows">
+            <div class="data-header" style="grid-template-columns: repeat(2, 1fr) 30px;">
+                <div>Filename</div>
+                <div>Caption</div>
+                <button type="button" class="add-row" onclick="addrow(this, ['div', 'div'], 'repeat(2, 1fr) 30px;')">+</button>
+            </div>
+            {% if imgs %}
+                {% for img in imgs %}
+                    <div class="data-row" style="grid-template-columns: repeat(2, 1fr) 30px;">
+                        <div contenteditable="true">{{ img['filename'] }}</div>
+                        <div contenteditable="true">{{ img['caption'] }}</div>
+                        <button type="button" class="delete-row">-</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    <div class="datapoint">
+        <div>DESCRIPTION:</div>
+        <div id="{{url}}-description" contenteditable="true">{{ description }}</div>
+    </div>
+{% endmacro %}
+
+{% if macro_name == "data_block" %}
+    {{ data_block(name, url, None, None, None, None, None, None, None, None, None, None, None) }}
+{% endif %}

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width; initial-scale:1.0;" />
+        <title>Camellia Discography - {{name}}</title>
+        <link rel="stylesheet" href="{{url_for('static', filename='css/songpage.css')}}" />
+        {% if imgs %}
+            <link rel="icon" type="image/x-icon" href="{{url_for('static', filename='images/' + imgs[0]['filename'])}}">
+        {% else %}
+            <link rel="icon" type="image/x-icon" href="{{url_for('static', filename='assets/Placeholder.png')}}">
+        {% endif %}
+    </head>
+    <body>
+        <div class="main-content-container">
+            <div class="navbar-container">
+                <a href="/" style="text-decoration: none;">
+                    <div class="nav-opt">Home</div>
+                </a>
+                <a href="/discography" style="text-decoration: none;">
+                    <div class="nav-opt">Discography</div>
+                </a>
+            </div>
+            <div class="content-divider">
+                <div class="sidebar"></div>
+                <div class="content">
+                    {% if variations %}
+                        <div class="dropdown">
+                            <button class="dropbtn">Select Variation</button>
+                            <div class="dropdown-content">
+                                <form action="/track/{{primaryUrl}}" method="post">
+                                    {% set varlist = [[primarySong, primaryUrl]] %}
+                                    {% for var in variations %}
+                                        {{varlist.append([var["name"], var["url"]]) or ""}}
+                                    {% endfor %}
+                                    {% for varData in varlist %}
+                                        {% if varData[1] == url %}
+                                            <button style="background-color: #ddd;" disabled>{{varData[0]}}</button>
+                                        {% else %}
+                                            <button type="submit" name="change-song" value="{{varData[1]}}">{{varData[0]}}</button>
+                                        {% endif %}
+                                    {% endfor %}
+                                </form>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if imgs %}
+                        {% if imgs|length() > 1 %}
+                            <div class="button-images-divider">
+                                <button id="switcherButtonLeft" class="switcher-button" onclick="switchImage(-1)">
+                                    <img src="{{url_for('static', filename='assets/leftArrow.png')}}" style="width: 100%; height: 100%; object-fit: contain;">
+                                </button>
+                                <div id="images-container" class="images-container">
+                                    <img id="leftCycleImage" class="leftCycleImage" src="{{url_for('static', filename='images/' + imgs[-1]['filename'])}}">
+                                    <img id="currentImage" class="image" src="{{url_for('static', filename='images/' + imgs[0]['filename'])}}" alt="{{imgs[0]['filename']}}">
+                                    <img id="rightCycleImage" class="rightCycleImage" src="{{url_for('static', filename='images/' + imgs[1]['filename'])}}">
+                                </div>
+                                <button id="switcherButtonRight" class="switcher-button" onclick="switchImage(1)">
+                                    <img src="{{url_for('static', filename='assets/rightArrow.png')}}" style="width: 100%; height: 100%; object-fit: contain;">
+                                </button>
+                            </div>
+                        {% else %}
+                            <div class="button-images-divider">
+                                <div></div>
+                                <div class="images-container">
+                                    <div></div>
+                                    <img id="currentImage" class="image" src="{{url_for('static', filename='images/' + imgs[0]['filename'])}}" alt="{{imgs[0]['filename']}}">
+                                    <div></div>
+                                </div>
+                                <div></div>
+                            </div>
+                        {% endif %}
+                        {% if imgs[0]['caption'] %}
+                            <div id="caption" class="caption">{{imgs[0]['caption']}}</div>
+                        {% else %}
+                            <div id="caption" class="caption"></div>
+                        {% endif %}
+                    {% else %}
+                        <div class="button-images-divider">
+                            <div></div>
+                            <div class="images-container">
+                                <div></div>
+                                <img id="currentImage" class="image" src="{{url_for('static', filename='assets/Placeholder.png')}}" alt="Placeholder.png">
+                                <div></div>
+                            </div>
+                            <div></div>
+                        </div>
+                    {% endif %}
+                    <script type="text/javascript">
+                        const imgs = JSON.parse('{{imgs|tojson}}')
+                    </script>
+                    <script src="../static/javascript/songpage.js" type="text/javascript"></script>
+                    <div class="details-description-divider">
+                        <div class="details">
+                            <div class="tr">
+                                <div class="tn">Name</div>
+                                <div class="td-b">{{name}}</div>
+                            </div>
+                            {% if altNames %}
+                                <div class="tr">
+                                    <div class="tn">Alternative Names</div>
+                                    <div class="td-b">{{altNames|join(', ')}}</div>
+                                </div>
+                            {% endif %}
+                            {% if artists %}
+                                <div class="tr">
+                                    <div class="tn">Artists</div>
+                                    <div class="td-b">{{artists|join(', ')}}</div>
+                                </div>
+                            {% endif %}
+                            <div class="tr">
+                                <div class="tn">Type</div>
+                                <div class="td-b">{{songType}}</div>
+                            </div>
+                            <div class="tr">
+                                <div class="tn">Duration</div>
+                                <div class="td-b">{{"?" if duration is none else duration}}</div>
+                            </div>
+                            {% if touhouOrigin %}
+                                <div class="tr">
+                                    <div class="tn">Touhou Sources</div>
+                                    <div class="td">
+                                        {% for song in touhouOrigin %}
+                                            <div style="width: 100%; white-space: nowrap;">{{song["touhouSong"]}} from {{song["touhouGame"]}} by ZUN</div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if originalSong %}
+                                <div class="tr">
+                                    <div class="tn">Original</div>
+                                    <div class="td">
+                                        <div><a href="{{originalSong['originalSongLink']}}" style="color: darkcyan; white-space: nowrap;" target="_blank">{{originalSong["originalSongName"]}}</a></div>
+                                        <div style="font-size: 10pt; white-space: nowrap; margin: 2px 0;">
+                                            {{originalSong["originalSongArtists"]|join(', ')}}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if albums %}
+                                <div class="tr">
+                                    <div class="tn">Albums</div>
+                                    <div class="td">
+                                        {% for album in albums %}
+                                            <div class="album-grid">
+                                                <div class="album-grid-row">
+                                                    <div class="album-grid-cell">Name</div>
+                                                    <div class="album-grid-cell">{{album["albumName"]}} <strong>[{{album["albumType"]}}]</strong></div>
+                                                </div>
+                                                <div class="album-grid-row">
+                                                    <div class="album-grid-cell">Label/Publisher/Circle</div>
+                                                    <div class="album-grid-cell">{{album["albumPublisher"]}}</div>
+                                                </div>
+                                                <div class="album-grid-row">
+                                                    <div class="album-grid-cell">Release</div>
+                                                    <div class="album-grid-cell">{{album["albumReleaseDate"]}}
+                                                        {% if album["albumReleaseEvent"] %}
+                                                            {{album["albumReleaseEvent"]}}
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if gameAppearances %}
+                                <div class="tr">
+                                    <div class="tn">Game Appearances</div>
+                                    <div class="td">
+                                        {% for game in gameAppearances %}
+                                            <div class="game-grid">
+                                                <div class="game-grid-row">
+                                                    <div class="game-grid-cell">Game</div>
+                                                    <div class="game-grid-cell">{{game["gameName"]}}</div>
+                                                </div>
+                                                <div class="game-grid-row">
+                                                    <div class="game-grid-cell">Developer/Publisher</div>
+                                                    <div class="game-grid-cell">{{game["gamePublisher"]}}</div>
+                                                </div>
+                                                <div class="game-grid-row">
+                                                    <div class="game-grid-cell">Date Added</div>
+                                                    <div class="game-grid-cell">{{game["gameReleaseDate"]}}</div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if links %}
+                                <div class="tr">
+                                    <div class="tn">Links</div>
+                                    <div class="td">
+                                    {% for link in links %}
+                                        <div class="link-wrapper">
+                                            <a class="link" href="{{link['link']}}" target="_blank">
+                                                <div class="link-block">
+                                                    <div class="link-block-divider">
+                                                        {% if link["linkSource"] == "YouTube" %}
+                                                            <img class="link-icon" src="{{url_for('static', filename='assets/youtube.png')}}">
+                                                        {% elif link["linkSource"] == "niconico" %}
+                                                            <img class="link-icon" src="{{url_for('static', filename='assets/niconico.png')}}">
+                                                        {% elif link["linkSource"] == "SoundCloud" %}
+                                                            <img class="link-icon" src="{{url_for('static', filename='assets/soundcloud.png')}}">
+                                                        {% elif link["linkSource"] == "Spotify" %}
+                                                            <img class="link-icon" src="{{url_for('static', filename='assets/spotify.png')}}">
+                                                        {% elif link["linkSource"] == "Apple Music" %}
+                                                            <img class="link-icon" src="{{url_for('static', filename='assets/apple music.png')}}">
+                                                        {% elif link["linkSource"] == "Bandcamp" %}
+                                                            <img class="link-icon" src="{{url_for('static', filename='assets/bandcamp.png')}}">
+                                                        {% elif link["linkSource"] == "Diverse Direct" %}
+                                                            <img class="link-icon" src="{{url_for('static', filename='assets/diverse direct.png')}}">
+                                                        {% elif link["linkSource"] == "TANO*C STORE" %}
+                                                            <img class="link-icon" src="{{url_for('static', filename='assets/hardcore tanoc.png')}}">
+                                                        {% endif %}
+                                                        <div class="link-name">{{link["linkSource"]}}: {{link["displayName"]}}
+                                                            {% if link["unofficial"] %}
+                                                                <strong>[U]</strong>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>  
+                                                </div>
+                                            </a>
+                                        </div>
+                                    {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% if description %}
+                            <div class="description">
+                                <div class="description-title">Description</div>
+                                <span style="white-space: pre-line;">{{description}}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

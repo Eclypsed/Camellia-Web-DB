@@ -1,0 +1,104 @@
+html, body {
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #e9e6e1;
+}
+@font-face {
+    font-family: anoxic;
+    src: url(../fonts/AnoxicSC-Medium.ttf);
+}
+.main-content-container {
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    display: grid;
+    grid-template-rows: 10vh auto;
+}
+.main-content-container::-webkit-scrollbar {
+    display: none;
+}
+.navbar-container {
+    width: 100%;
+    height: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+.nav-opt {
+    display: flex;
+    height: 100%;
+    background-color: rgb(34, 34, 34);
+    color: white;
+    font-family: anoxic;
+    font-size: 5vh;
+    align-items: center;
+    justify-content: center;
+}
+.nav-opt:hover {
+    background-color: #111;
+    cursor: pointer;
+}
+.song-class-header {
+    text-align: center;
+    font-size: 24pt;
+    padding: 10px;
+    background-color: #e9e6e1;
+    font-family: 'Lato', sans-serif;
+}
+.content {
+    width: auto;
+    display: grid;
+    padding: 20px;
+    grid-template-columns: repeat(auto-fill, 250px);
+    justify-content: center;
+    column-gap: 20px;
+    row-gap: 20px;
+}
+.song-link {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-width: 0;
+    background-color: transparent;
+}
+.song-block {
+    width: 100%;
+    height: 100%;
+    background-color: #e9e6e1;
+    position: relative;
+    transition: width 0.2s, height 0.2s;
+}
+.song-block:hover {
+    width: 95%;
+    height: 95%;
+    cursor: pointer;
+}
+.song-jacket {
+    width: 100%;
+    aspect-ratio: 1/1;
+}
+.song-name {
+    position: relative;
+    color: white;
+    background-color: #d1566a;
+    text-overflow: ellipsis;
+    font-size: 12pt;
+    line-height: 12pt;
+    overflow: hidden;
+    margin-top: 5px;
+    padding: 10px;
+    white-space: nowrap;
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+}

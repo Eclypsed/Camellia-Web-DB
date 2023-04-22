@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/admin-login.css')}}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap" rel="stylesheet">
+    <style> @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap'); </style>
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <div id="main-content-container">
+        <form id="login-form">
+            <div id="login-box">
+                <div id="login-box-divider">
+                    <div id="header">Login</div>
+                    <input id="username-field" type="text" placeholder="Username">
+                    <input id="password-field" type="password" placeholder="Password">
+                    <button id="submit-button" type="submit">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script>
+        $(document).on('submit', '#login-form', function(event) {
+            event.preventDefault();
+            var username = $('#username-field').val();
+            var password = $('#password-field').val();
+            if (username == '' || password == '') {
+                return alert("Pleae enter both a username and password")
+            };
+            $.ajax({
+                type: "POST",
+                url: "/admin-login",
+                data: {
+                    "username": username,
+                    "password": password
+                },
+                success: function(response) {
+                    if (response.status == "success") {
+                        window.location.href = response.url;
+                    } else {
+                        alert(response.message)
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
